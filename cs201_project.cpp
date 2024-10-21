@@ -14,6 +14,7 @@ private:
     int index(int high, int low) {
         return high * sqrt(univ) + low;
     }
+
 public:
     vEB(int u) {
         univ = u;
@@ -27,117 +28,56 @@ public:
     int getmin() { return min; }
     int getmax() { return max; }
 
-    // void insert(int key) {
-    //     if (key < 0 || key >= univ) return;
+    // Function to compute the Morton code (Z-curve) for given coordinates
+    int mortonCode(int x, int y) {
+        int z = 0;
+        for (int i = 0; i < sizeof(int) * 8; ++i) {
+            z |= ((x >> i) & 1) << (2 * i + 1);
+            z |= ((y >> i) & 1) << (2 * i);
+        }
+        return z;
+    }
 
-    //     if (min == -1) { 
-    //         // If tree is empty, set min and max to key
-    //         min = max = key; 
-    //         return; 
-    //     }
+    void insert(pair<int, int> p) {
+        int x = p.first;
+        int y = p.second;
 
-    //     if (key < min) { 
-    //         swap(key, min); 
-    //     }
-    //     if (key > max) { 
-    //         max = key; 
-    //     }
+        int key = mortonCode(x, y); // Compute Morton code
 
-    //     if (univ > 2) {
-    //         int high_x = high(key);
+        if (key < 0 || key >= univ) return;
 
-    //         if (clusters.find(high_x) == clusters.end()) {
-    //             clusters[high_x] = new vEB((int)sqrt(univ));
-    //             if (summary)
-    //                 summary->insert(high_x);
-    //         }
-    //         clusters[high_x]->insert(low(key));    
-    //     }
-    // }
-
-    void insert(pair<int,int> coord)
-    {
-        int x = coord.first;
-        int y = coord.second;
-
-        int key = (x) * (int)sqrt(univ) + (y);
-
-        if(key < 0 || key >= univ) return;
-
-        if(min == -1)
-        {
+        if (min == -1) {
+            // If tree is empty, set min and max to key
             min = max = key;
             return;
         }
 
-        if(key < min)
-        {
+        if (key < min) {
             swap(key, min);
         }
-
-        if(key > max)
-        {
+        if (key > max) {
             max = key;
         }
 
-        if(univ > 2)
-        {
+        if (univ > 2) {
             int high_x = high(key);
 
-            if(clusters.find(high_x) == clusters.end())
-            {
+            if (clusters.find(high_x) == clusters.end()) {
                 clusters[high_x] = new vEB((int)sqrt(univ));
-                if(summary)
-                {
-                    summary->insert({ high_x, 0});
-                }
+                if (summary)
+                    summary->insert({high_x, 0}); // Pass as a pair
             }
-
-            clusters[high_x]->insert({low(key), 0});
+            clusters[high_x]->insert({low(key), 0}); // Pass as a pair
         }
     }
 
-    // int successor(int key) {
-    //     // cout << min << " " << max << endl;
-    //     if (key >= max) return -1;
-    //     if (key < min) return min;
+    // Successor function
+    pair<int, int> successor(pair<int, int> coord) {
+        int key = mortonCode(coord.first, coord.second);
+        if (key >= max) return {-1, -1}; // No successor
+        if (key < min) return {min / 2, min % 2}; // Return min as coordinates
 
-    //     if (univ == 2) return max;
-
-    //     int high_x = high(key);
-    //     int low_x = low(key);
-    //     int max_low = -1;
-
-    //     if (clusters.find(high_x) != clusters.end()) {
-    //         max_low = clusters[high_x]->max;
-    //     }
-
-    //     if (max_low != -1 && low_x < max_low) {
-    //         int offset = clusters[high_x]->successor(low_x);
-    //         if (offset != -1)
-    //             return index(max_low, offset);
-    //     } 
-    //     else {
-    //         int succ_cluster = -1;
-    //         if (summary) succ_cluster = summary->successor(high_x);
-
-    //         if (succ_cluster == -1) return -1;
-    //         else {
-    //             int offset = clusters[succ_cluster]->min;
-    //             return index(succ_cluster, offset);
-    //         }
-    //     }
-    // }
-
-    int successor(pair<int, int> coord) {
-        int x = coord.first;
-        int y = coord.second;
-        int key = x * (int)sqrt(univ) + y;
-
-        if (key >= max) return -1;
-        if (key < min) return min;
-
-        if (univ == 2) return max;
+        if (univ == 2) return {max / 2, max % 2};
 
         int high_x = high(key);
         int low_x = low(key);
@@ -148,63 +88,28 @@ public:
         }
 
         if (max_low != -1 && low_x < max_low) {
-            int offset = clusters[high_x]->successor({low_x, 0});
+            int offset = clusters[high_x]->successor({low_x / 2, low_x % 2});
             if (offset != -1)
-                return index(high_x, offset);
+                return {high_x, offset}; // Return as coordinates
         } else {
             int succ_cluster = -1;
-            if (summary) succ_cluster = summary->successor({high_x,0});
+            if (summary) succ_cluster = summary->successor({high_x, 0});
 
-            if (succ_cluster == -1) return -1;
+            if (succ_cluster == -1) return {-1, -1};
             else {
                 int offset = clusters[succ_cluster]->min;
-                return index(succ_cluster, offset);
+                return {succ_cluster, offset}; // Return as coordinates
             }
         }
     }
 
+    // Predecessor function
+    pair<int, int> predecessor(pair<int, int> coord) {
+        int key = mortonCode(coord.first, coord.second);
+        if (key <= min) return {-1, -1}; // No predecessor
+        if (key > max) return {max / 2, max % 2}; // Return max as coordinates
 
-
-    // int predecessor(int key) {
-    //     // cout << min << " " << max << endl;
-    //     if (key <= min) return -1;
-    //     if (key > max) return max;
-
-    //     if (univ == 2) return min;
-
-    //     int high_x = high(key);
-    //     int low_x = low(key);
-    //     int min_low = -1;
-
-    //     if (clusters.find(high_x) != clusters.end()) {
-    //         min_low = clusters[high_x]->min;
-    //     }
-
-    //     if (min_low != -1 && low_x > min_low) {
-    //         int offset = clusters[high_x]->predecessor(low_x);
-    //         if (offset != -1) return index(high_x, offset);
-    //     } 
-    //     else {
-    //         int pred_cluster = -1;
-    //         if (summary) pred_cluster = summary->predecessor(high_x);
-
-    //         if (pred_cluster == -1) return -1;
-    //         else {
-    //             int offset = clusters[pred_cluster]->max;
-    //             return index(pred_cluster, offset);
-    //         }
-    //     }
-    // }
-
-       int predecessor(pair<int, int> coord) {
-        int x = coord.first;
-        int y = coord.second;
-        int key = x * (int)sqrt(univ) + y;
-
-        if (key <= min) return -1;  
-        if (key > max) return max;
-
-        if (univ == 2) return min;
+        if (univ == 2) return {min / 2, min % 2};
 
         int high_x = high(key);
         int low_x = low(key);
@@ -213,65 +118,57 @@ public:
         if (clusters.find(high_x) != clusters.end()) {
             min_low = clusters[high_x]->min;
         }
-  
+
         if (min_low != -1 && low_x > min_low) {
-            int offset = clusters[high_x]->predecessor({low_x, 0});
-            if (offset != -1) return index(high_x, offset);
+            int offset = clusters[high_x]->predecessor({low_x / 2, low_x % 2});
+            if (offset != -1) return {high_x, offset}; // Return as coordinates
         } else {
             int pred_cluster = -1;
-            if (summary) pred_cluster = summary->predecessor({high_x,0});
+            if (summary) pred_cluster = summary->predecessor({high_x, 0});
 
-            if (pred_cluster == -1) return -1;
+            if (pred_cluster == -1) return {-1, -1};
             else {
                 int offset = clusters[pred_cluster]->max;
-                return index(pred_cluster, offset);
+                return {pred_cluster, offset}; // Return as coordinates
             }
         }
     }
-
 
     double euclediandistance(int x1, int y1, int x2, int y2) {
         return sqrt(pow(x1 - x2, 2) + pow(y1 - y2, 2));
     }
 
-
     bool contains(pair<int, int> coord) {
-        int x = coord.first * (int)sqrt(univ) + coord.second;
+        int x = mortonCode(coord.first, coord.second);
         if (min == x || max == x) return true;
         else if (univ <= 2) return false;
         else {
-            if (clusters.find(high(x)) != clusters.end())
-                return clusters[high(x)]->contains({low(x),0});
-            else
-                return false;
+            if (clusters.find(high(x)) != clusters.end()) return clusters[high(x)]->contains({low(x),0});
+            else return false;
         }
     }
 };
 
-int findNearestdriver(vEB* driversTree, int u, int v) {
-    int passengersCoord = u * (int)sqrt(driversTree->getUniverseSize()) + v;
-    // cout << "Passenger Coordinates: " << passengersCoord << endl; // Debugging output
-    // cout << "Passenger Coordinates: " << passengersCoord << endl; // Debugging output
+pair <int,int> findNearestdriver(vEB* driversTree, pair<int,int> passenger) {
+    int u = passenger.first;
+    int v = passenger.second;
 
-    if (driversTree->contains({u,v})) return passengersCoord;
+    if (driversTree->contains({u,v})) return {u,v};
 
-    int succ = driversTree->successor({u,v});
-    int pred = driversTree->predecessor({u,v});
+    pair<int, int> succ = driversTree->successor({u,v});
+    pair<int, int> pred = driversTree->predecessor({u,v});
 
-    cout << "Predecessor: " << pred << ", Successor: " << succ << endl; // Debugging output
+    cout << "Predecessor: (" << pred.first << "," << pred.second << "), Successor: (" << succ.first << "," << succ.second << ")" << endl;
 
-    if (succ == -1) return pred; 
-    if (pred == -1) return succ;
+    if (succ.first == -1 && succ.second == -1)
+        return pred;
+    if (pred.first == -1 && pred.second == -1)
+        return succ;
 
+    double succDistance = driversTree->euclediandistance(u, v, succ.first, succ.second);
+    double predDistance = driversTree->euclediandistance(u, v, pred.first, pred.second);
 
-    int pred_x = (pred/(int)sqrt(driversTree->getUniverseSize())) + 1;
-    int pred_y = pred % (int)sqrt(driversTree->getUniverseSize())+1;
-    int succ_x = (succ/(int)sqrt(driversTree->getUniverseSize())) + 1;
-    int succ_y = succ % (int)sqrt(driversTree->getUniverseSize())+1;
-    double succDistance = driversTree ->euclediandistance(u, v, succ_x, succ_y);
-    double predDistance = driversTree ->euclediandistance(u, v, pred_x, pred_y);
-
-    return (succDistance < predDistance) ? succ : pred; 
+    return (succDistance < predDistance) ? succ : pred;
 }
 
 int main() {
@@ -279,21 +176,17 @@ int main() {
     vEB* driversTree = new vEB(universe_size);
 
     // Insert driver locations into the vEB tree
-   driversTree->insert({1, 1});
-   driversTree->insert({2, 2});
-   driversTree->insert({1,3});
-   driversTree->insert({3,3});
-
-    // Print min and max after insertions
-    // cout << "Min: " << driversTree->getmin() << ", Max: " << driversTree->getmax() << endl;
+    driversTree->insert({1, 1});
+    driversTree->insert({2, 2});
+    driversTree->insert({1,3});
+    driversTree->insert({3,3});
 
     // Passenger coordinates as (u, y)
-    int u = 2;  // Example value for u
-    int y = 1;  // Example value for y
+    pair<int, int> passenger = {2, 2};
 
-    // Find the nearest driver
-    int nearestDriver = findNearestdriver(driversTree,u , y);
-    cout << "Nearest Driver is at location: " << nearestDriver << endl;
+    pair<int, int> nearestDriver = findNearestdriver(driversTree, passenger);
+
+    cout << "Nearest driver to passenger: (" << nearestDriver.first << ", " << nearestDriver.second << ")" << endl;
 
     return 0;
 }
