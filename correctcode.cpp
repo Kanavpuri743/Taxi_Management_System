@@ -50,17 +50,17 @@ public:
     int upperSquareRoot(int x) { return (int)pow(2, ceil(log2(x) / 2)); }
 
     // Insert Function
-    void insertrow(int x) {
+    void insert(int x) {
         if (min == -1) {
             min = max = x;
         } else {
             if (x < min) swap(x, min);
             if (u > 2) {
                 if (cluster[high(x)]->min == -1) {
-                    summary->insertrow(high(x));
-                    cluster[high(x)]->insertrow(low(x));
+                    summary->insert(high(x));
+                    cluster[high(x)]->insert(low(x));
                 } else {
-                    cluster[high(x)]->insertrow(low(x));
+                    cluster[high(x)]->insert(low(x));
                 }
             }
             if (x > max) max = x;
@@ -69,25 +69,22 @@ public:
 
     // make insert function to insert values column wise such that the cluster[low_x]
     // will have the values of the same column
-    void insertcolumn(int x)
-    {
-        if(min == -1) min =max = x;
-        else
-        {
-            if(x < min) swap(x,min);
-            if(u > 2)
-            {
-                if(cluster[low(x)]->min == -1){
-                    summary->insertcolumn(low(x));
-                    cluster[low(x)]->insertcolumn(high(x));
-                }
-                else{
-                    cluster[low(x)]->insertcolumn(high(x));
-                }
-            }
-            if(x > max) max = x;
-        }
-    }
+    // void insertcolumn(int x){
+    //     if(min == -1) min =max = x;
+    //     else{
+    //         if(x < min) swap(x,min);
+    //         if(u > 2){
+    //             if(cluster[low(x)]->min == -1){
+    //                 summary->insertcolumn(low(x));
+    //                 cluster[low(x)]->insertcolumn(high(x));
+    //             }
+    //             else{
+    //                 cluster[low(x)]->insertcolumn(high(x));
+    //             }
+    //         }
+    //         if(x > max) max = x;
+    //     }
+    // }
 
     // Delete Function
     void remove(int x) {
@@ -121,7 +118,7 @@ public:
     }
 
     // Successor Function
-    int successorrow(int x) {
+    int successor(int x) {
         if (u == 2) {
             if (x == 0 && max == 1) return 1;
             else return -1;
@@ -130,10 +127,10 @@ public:
         } else {
             int maxLow = cluster[high(x)]->max;
             if (maxLow != -1 && low(x) < maxLow) {
-                int offset = cluster[high(x)]->successorrow(low(x));
+                int offset = cluster[high(x)]->successor(low(x));
                 return index(high(x), offset);
             } else {
-                int succCluster = summary->successorrow(high(x));
+                int succCluster = summary->successor(high(x));
                 if (succCluster == -1) return -1;
                 else {
                     int offset = cluster[succCluster]->min;
@@ -143,75 +140,61 @@ public:
         }
     }
 
-    int successorcolumn(int x) {
-        if(u == 2)
-        {
-            if(x == 0 && max == 1) return 1;
-            else return -1;
-        }
-        else if(min != -1 && x < min)
-        {
-            return min;
-        }
-        else
-        {
-            int maxLow = cluster[low(x)]->max;
-            if(maxLow != -1 && high(x) < maxLow)
-            {
-                int offset = cluster[low(x)]->successorcolumn(high(x));
-                return index(offset,low(x));
-            }
-            else
-            {
-                int succCluster = summary->successorcolumn(low(x));
-                if(succCluster == -1) return -1;
-                else
-                {
-                    int offset = cluster[succCluster]->min;
-                    return index(succCluster,offset);
-                }
-            }
-        }
-    }
+    // int successorcolumn(int x) {
+    //     if(u == 2){
+    //         if(x == 0 && max == 1) return 1;
+    //         else return -1;
+    //     }
+    //     else if(min != -1 && x < min){
+    //         return min;
+    //     }
+    //     else{
+    //         int maxLow = cluster[low(x)]->max;
+    //         if(maxLow != -1 && high(x) < maxLow){
+    //             int offset = cluster[low(x)]->successorcolumn(high(x));
+    //             return index(offset,low(x));
+    //         }
+    //         else{
+    //             int succCluster = summary->successorcolumn(low(x));
+    //             if(succCluster == -1) return -1;
+    //             else{
+    //                 int offset = cluster[succCluster]->min;
+    //                 return index(succCluster,offset);
+    //             }
+    //         }
+    //     }
+    // }
 
-    int predecessorcolumn(int x)
-    {
-        if(u == 2)
-        {
-            if(x == 1 && min == 0) return 0;
-            else return -1;
-        }
-        else if(max != -1 && x > max)
-        {
-            return max;
-        }
-        else
-        {
-            int minLow = cluster[low(x)]->min;
-            if(minLow != -1 && high(x) > minLow)
-            {
-                int offset = cluster[low(x)]->predecessorcolumn(high(x));
-                return index(offset,low(x));
-            }
-            else
-            {
-                int predCluster = summary->predecessorcolumn(low(x));
-                if(predCluster == -1)
-                {
-                    if(min != -1 && x > min) return min;
-                    else return -1;
-                }
-                else
-                {
-                    int offset = cluster[predCluster]->max;
-                    return index(offset,predCluster);
-                }
-            }
-        }
-    }
+    // int predecessorcolumn(int x){
+    //     if(u == 2){
+    //         if(x == 1 && min == 0) return 0;
+    //         else return -1;
+    //     }
+    //     else if(max != -1 && x > max){
+    //         return max;
+    //     }
+    //     else{
+    //         int minLow = cluster[low(x)]->min;
+    //         if(minLow != -1 && high(x) > minLow) {
+    //             int offset = cluster[low(x)]->predecessorcolumn(high(x));
+    //             return index(offset,low(x));
+    //         }
+    //         else{
+    //             int predCluster = summary->predecessorcolumn(low(x));
+    //             if(predCluster == -1){
+    //                 if(min != -1 && x > min) return min;
+    //                 else return -1;
+    //             }
+    //             else{
+    //                 int offset = cluster[predCluster]->max;
+    //                 return index(offset,predCluster);
+    //             }
+    //         }
+    //     }
+    // }
 
     // Predecessor Function
-    int predecessorrow(int x) {
+    int predecessor(int x) {
         if (u == 2) {
             if (x == 1 && min == 0) return 0;
             else return -1;
@@ -220,10 +203,10 @@ public:
         } else {
             int minLow = cluster[high(x)]->min;
             if (minLow != -1 && low(x) > minLow) {
-                int offset = cluster[high(x)]->predecessorrow(low(x));
+                int offset = cluster[high(x)]->predecessor(low(x));
                 return index(high(x), offset);
             } else {
-                int predCluster = summary->predecessorrow(high(x));
+                int predCluster = summary->predecessor(high(x));
                 if (predCluster == -1) {
                     if (min != -1 && x > min) return min;
                     else return -1;
@@ -238,7 +221,7 @@ public:
     // Modified successorpair function to print (x, y) pairs
     void successorpairrow(int x, int y) {
         int key = x * 4 + y;  // Correct key generation formula for universe size 16 (4x4 grid)
-        int ans = successorrow(key);
+        int ans = successor(key);
         if (ans == -1) {
             cout << " -1" << " ";
         } else {
@@ -248,7 +231,7 @@ public:
 
     void predecessorpairrow(int x, int y) {
         int key = x * 4 + y;  // Correct key generation formula for universe size 16 (4x4 grid)
-        int ans = predecessorrow(key);
+        int ans = predecessor(key);
         if (ans == -1) {
             cout << " -1" << " ";
         } else {
@@ -257,22 +240,22 @@ public:
     }
 
     void successorpaircolumn(int x, int y) {
-        int key = x * 4 + y;  // Correct key generation formula for universe size 16 (4x4 grid)
-        int ans = successorcolumn(key);
+        int key = y * 4 + x;  // Correct key generation formula for universe size 16 (4x4 grid)
+        int ans = successor(key);
         if (ans == -1) {
             cout << " -1" << " ";
         } else {
-            cout << "(" << ans / 4 << ", " << ans % 4 << ")" << "";
+            cout << "(" << ans % 4 << ", " << ans / 4 << ")" << "";
         }
     }
 
     void predecessorpaircolumn(int x, int y) {
-        int key = x * 4 + y;  // Correct key generation formula for universe size 16 (4x4 grid)
-        int ans = predecessorcolumn(key);
+        int key = y * 4 + x;  // Correct key generation formula for universe size 16 (4x4 grid)
+        int ans = predecessor(key);
         if (ans == -1) {
             cout << " -1" << " ";
         } else {
-            cout << "(" << ans / 4 << ", " << ans % 4 << ")" << "";
+            cout << "(" << ans % 4 << ", " << ans / 4 << ")" << "";
         }
     }
 
@@ -280,13 +263,13 @@ public:
     void insertpairrow(int x, int y) {
         int key = x * 4 + y; 
          // Correct key generation formula for universe size 16 (4x4 grid)
-        insertrow(key);
+        insert(key);
     }
 
     void insertpaircolumn(int x, int y) {
-        int key = x * 4 + y; 
+        int key = y * 4 + x; 
          // Correct key generation formula for universe size 16 (4x4 grid)
-        insertcolumn(key);
+        insert(key);
     }
 };
 
@@ -304,12 +287,12 @@ int main() {
     tree1.insertpairrow(0, 2);
 
     // Insert elements into tree2 (row-wise, same as tree1)
-    tree2.insertpairrow(0, 3);
-    tree2.insertpairrow(1, 1);
-    tree2.insertpairrow(2, 2);
-    tree2.insertpairrow(3, 0);
-    tree2.insertpairrow(3, 1);
-    tree2.insertpairrow(0, 2);
+    tree2.insertpaircolumn(0, 3);
+    tree2.insertpaircolumn(1, 1);
+    tree2.insertpaircolumn(2, 2);
+    tree2.insertpaircolumn(3, 0);
+    tree2.insertpaircolumn(3, 1);
+    tree2.insertpaircolumn(0, 2);
 
     // Test successors and predecessors for tree1 (row-wise)
     cout << "Tree 1 Successors (row-wise):" << endl;
