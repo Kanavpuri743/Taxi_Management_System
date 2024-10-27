@@ -161,6 +161,10 @@ std::vector<int> dijkstra(int graph[V][V], int src){
     return dist;
 }
 
+int fare(int dist, int num_drivers){
+    return 50 + 10 * dist + 5 * num_drivers;
+}
+
 std::vector<std::pair<int, int>> findNonEmptyPoints(int x, int y, vEBTree* tree1, int k) {
     std::vector<std::pair<int, int>> nonEmptyPoints;
     int u = tree1->u2;
@@ -312,4 +316,6 @@ int main(){
     int dest_x,dest_y;
     cin>>dest_x>>dest_y;
     cout<<"The shortest distance from ("<<x<<","<<y<<") to ("<<dest_x<<","<<dest_y<<") is "<<dist[dest_x*v2+dest_y]<<endl;
+
+    cout<<"Fare: "<<fare(dist[dest_x*v2+dest_y],nonEmptyPoints.size())<<endl;
 }
