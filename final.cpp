@@ -246,7 +246,7 @@ int main(){
     tree.insertpair(10,3);
     tree.insertpair(8,2);
     tree.insertpair(11, 2);
-    tree.insertpair(11,13);
+    tree.insertpair(11, 13);
     tree.insertpair(1,12);
     tree.insertpair(2,8);
     tree.insertpair(13,6);
@@ -258,26 +258,45 @@ int main(){
     cout<<"Enter the value of x and y";
     int x,y;
     cin>>x>>y;
-    int k=3;
+    int k=4;
     vector<pair<int, int>> nonEmptyPoints = findNonEmptyPoints(x,y, &tree, k);
 
-    string filename = "output_1.csv"; // Replace with your CSV file path
-    int adjacencyMatrix[MAX_SIZE][MAX_SIZE] = {0};
-    int size = 0;
+    // string filename = "output_1.csv"; // Replace with your CSV file path
+    // int adjacencyMatrix[MAX_SIZE][MAX_SIZE] = {0};
+    // int size = 0;
 
-    // Read the adjacency matrix from the CSV file
-    readAdjacencyMatrix(filename, adjacencyMatrix, size);
+    // // Read the adjacency matrix from the CSV file
+    // readAdjacencyMatrix(filename, adjacencyMatrix, size);
 
     // Print the adjacency matrix to verify the input
     // cout << "Adjacency Matrix:" << endl;
     // printMatrix(adjacencyMatrix, size);
-
-    vector<int> dist = dijkstra(adjacencyMatrix,x*v2+y);
-    // Print the non-empty points in the square.
-    cout << "Non-empty points in the square of size 2k+1 around ("<<x<<", "<<y<<") in the grid:" << endl;
-    for (const auto& point : nonEmptyPoints) {
-        cout << "(" << point.first << ", " << point.second << ")" << endl;
+    int graph[V][V];
+    for (int i = 0; i < V; i++) {
+        for (int j = 0; j < V; j++) {
+            graph[i][j] = INF;
+        }
     }
+    //cout<<1;
+    fstream file("graph.txt");
+    if (!file.is_open()) {
+        cout << "Error opening file" << endl;
+        return 1;
+    }
+    //cout<<2;
+    int u, v, w;
+    while (file >> u >> v >> w) {
+        graph[u][v] = w;
+        graph[v][u] = w;
+    }
+    //cout<<3;
+    vector<int> dist = dijkstra(graph,x*v2+y);
+    //cout<<4;
+    // Print the non-empty points in the square.
+    // cout << "Non-empty points in the square of size 2k+1 around ("<<x<<", "<<y<<") in the grid:" << endl;
+    // for (const auto& point : nonEmptyPoints) {
+    //     cout << "(" << point.first << ", " << point.second << ")" << endl;
+    // }
 
     vector <pair<int,int>> distances;
     for (const auto& point : nonEmptyPoints){
@@ -288,4 +307,9 @@ int main(){
     for (const auto& point : distances){
         cout<<"("<<point.second/v2<<","<<point.second%v2<<") : "<<point.first<<endl;
     }
+
+    cout<<"Enter the Destination Coordinates";
+    int dest_x,dest_y;
+    cin>>dest_x>>dest_y;
+    cout<<"The shortest distance from ("<<x<<","<<y<<") to ("<<dest_x<<","<<dest_y<<") is "<<dist[dest_x*v2+dest_y]<<endl;
 }
