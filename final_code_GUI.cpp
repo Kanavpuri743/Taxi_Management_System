@@ -10,13 +10,13 @@
 #include <cmath>
 using namespace std;
 
-//defining the universe size
+//modifiable paramenters to handle the code
 #define V 256 //total size of the universe
 #define v2 16 //square root of the universe size
 #define INF 99999 //infinity value for the graph
 #define k 4 //range for the nearby drivers
-#define graph_file "graph.txt" //file containing the graph
-#define driver_file "drivers.txt" //file containing the driver locations
+#define graph_file "graph.txt" //path of the file containing the graph
+#define driver_file "drivers.txt" //path of the file containing the driver locations
 
 //class to manage the vEB tree operations
 class vEBTree {
