@@ -64,11 +64,11 @@ For running GUI Application:
 ./final_code_console
 ```
 ---
-##Usage
+## Usage
 1. Keep the text files "drivers.txt" and "graph.txt" in the same directory or write their paths in the code file where the constants "driver_file" and "graph_file" are defined at the top of the code.
-1. Run the program
-2. Enter pickup and destination coordinates 
-3. [For GUI Application] Click "Find Drivers" to view:
+2. Run the program
+3. Enter pickup and destination coordinates 
+4. [For GUI Application] Click "Find Drivers" to view:
     - Available drivers
     - Shortest route
     - Fare estimate and ETA
