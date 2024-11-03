@@ -14,7 +14,15 @@ A C++ application that simulates a taxi routing and management system using **va
 
 ---
 
-## Requirements
+## Dependencies
+
+- wxWidgets (GUI framework)
+- C++ Standard Library
+- Standard Template Library (STL)
+
+---
+
+## Build Requirements
 
 - C++ Compiler with C++11 support
 - wxWidgets 3.0 or later
@@ -80,5 +88,10 @@ For running GUI Application:
 - **Gitansh Bansal** (2023MCB1294)
 - **Mohakjot Dhiman** (2023MCB1302)
 - **Kanav Puri** (2023MCB1298)
+
+---
+
+## Note
+This project was developed as part of the Data Structures and Algorithms (CS201) course. The implementation focuses on demonstrating the practical application of advanced data structures and algorithms in a real-world scenario.
 
 ---
