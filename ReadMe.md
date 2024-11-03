@@ -18,7 +18,6 @@ A C++ application that simulates a taxi routing and management system using **va
 
 - C++ Compiler with C++11 support
 - wxWidgets 3.0 or later
-- Two text files - "drivers.txt" and "graph.txt" in the same directory as the code
 
 ---
 
