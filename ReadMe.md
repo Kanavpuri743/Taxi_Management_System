@@ -18,6 +18,7 @@ A C++ application that simulates a taxi routing and management system using **va
 
 - C++ Compiler with C++11 support
 - wxWidgets 3.0 or later
+- Two text files - "drivers.txt" and "graph.txt" in the same directory as the code
 
 ---
 
@@ -65,9 +66,10 @@ For running GUI Application:
 ```
 ---
 ##Usage
-1. Run the application
+1. Keep the text files "drivers.txt" and "graph.txt" in the same directory or write their paths in the code file where the constants "driver_file" and "graph_file" are defined at the top of the code.
+1. Run the program
 2. Enter pickup and destination coordinates 
-3. Click "Find Drivers" to view:
+3. [For GUI Application] Click "Find Drivers" to view:
     - Available drivers
     - Shortest route
     - Fare estimate and ETA
