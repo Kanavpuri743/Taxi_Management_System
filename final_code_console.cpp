@@ -11,8 +11,8 @@ using namespace std;
 const int MAX_SIZE = 256; // Maximum size for the adjacency matrix
 #define INF 99999 //infinity value for the graph
 #define k 4 //range for the nearby drivers
-#define graph_file "graph.txt" //file containing the graph
-#define driver_file "drivers.txt" //file containing the driver locations
+#define graph_file "graph.txt" //path of the file containing the graph
+#define driver_file "drivers.txt" //path of the file containing the driver locations
 
 //class to manage the vEB tree operations
 class vEBTree {
