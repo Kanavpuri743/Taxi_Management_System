@@ -32,7 +32,9 @@ A C++ application that simulates a taxi routing and management system using **va
 ## Some Points to Note
 1. The code zip file contains two codes- "final_code_GUI.cpp" and "final_code_console.cpp", and two text files.
 2. The codes are same, except the former supports Graphical User Interface while the latter only gives output in the console/terminal.
-3. To run the code "final_code_GUI.cpp", installation of the "wxWidgets" library is necessary, whereas the other code can be run as it is. 
+3. To run the code "final_code_GUI.cpp", installation of the "wxWidgets" library is necessary, whereas the other code can be run as it is.
+4. The text files must be present in the same directory as the codes.
+5. Some parametes like the Universe Size, file paths, driver search area etc. can be changed in the starting of the code where all these are defined.
 
 ---
 ## Quick Start
