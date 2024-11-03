@@ -56,7 +56,7 @@ For running GUI Application:
 
 For compiling Console Application:
 ```bash
-g++ -std=c++11 final_code_console.cpp `wx-config --cxxflags --libs` -o final_code_console
+g++ -std=c++11 final_code_console.cpp -o final_code_console
 ```
 
 For running GUI Application:
